@@ -1,1 +1,3 @@
-READ ME
+## LemarConnect Alguos
+
+Devloppement phase
