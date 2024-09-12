@@ -10,17 +10,22 @@ LoRaModem modem;
 // Please enter your sensitive data in the Secret tab or arduino_secrets.h
 String appEui = SECRET_APP_EUI;
 String appKey = SECRET_APP_KEY;
+int waitToSendMessage = 0;
 
-void setup() {
+void setup()
+{
   // Setting up serial
   Serial.begin(115200);
   while (!Serial)
     ;
 
   // Setting up RF Band
-  if (!modem.begin(EU868)) {
+  if (!modem.begin(EU868))
+  {
     Serial.println("Failed to start module");
-    while (1) {}
+    while (1)
+    {
+    }
   };
 
   // Info on Module
@@ -29,12 +34,14 @@ void setup() {
   Serial.print("Your device EUI is: ");
   Serial.println(modem.deviceEUI());
 
-
   // OTAA connection
   int connected = modem.joinOTAA(appEui, appKey);
-  if (!connected) {
+  if (!connected)
+  {
     Serial.println("Something went wrong; are you indoor? Move near a window and retry");
-    while (1) {}
+    while (1)
+    {
+    }
   }
 
   // Set poll interval to 60 secs.
@@ -44,21 +51,23 @@ void setup() {
   // this is enforced by firmware and can not be changed.
   delay(1000);
 
-  if (!ENV.begin()) {
+  if (!ENV.begin())
+  {
     Serial.println("Failed to initialize MKR ENV shield!");
     while (1)
       ;
   }
+  waitToSendMessage = millis();
 }
 
-
-void loop() {
+void loop()
+{
   Serial.println();
-  //Serial.println("Enter a message to send to network");
-  //Serial.println("(make sure that end-of-line 'NL' is enabled)");
+  // Serial.println("Enter a message to send to network");
+  // Serial.println("(make sure that end-of-line 'NL' is enabled)");
 
-  //while (!Serial.available());
-  //String msg ="";
+  // while (!Serial.available());
+  // String msg ="";
 
   Serial.println();
   //  Serial.print("Sending: " + msg + " - ");
@@ -77,7 +86,7 @@ void loop() {
   ////////////////////////
   ///// Store Data in Buffer
   buffers[0] = byte(temperature >> 8);
-  buffers[1] = byte(temperature & 0x00FF);  //  fix error on mask
+  buffers[1] = byte(temperature & 0x00FF); //  fix error on mask
   buffers[2] = byte(humidity >> 8);
   buffers[3] = byte(humidity & 0x00FF);
   buffers[4] = byte(pressure >> 8);
@@ -86,18 +95,13 @@ void loop() {
   buffers[7] = byte(illuminance & 0x00FF);
   ////////////////////////////////////
 
-
   ///// send data to TTN
   int err;
 
+  // Sending of the two octets of temp via LoRa
 
-  modem.beginPacket();
 
-  modem.write(buffers, 8);  // Sending of the two octets of temp via LoRa
-
-<<<<<<< HEAD
 Serial.println("Temperature")
-=======
   Serial.print("Temperature : ");
   Serial.println(ENV.readTemperature());
 
@@ -108,9 +112,8 @@ Serial.println("Temperature")
   Serial.println(ENV.readPressure());
 
   Serial.print("Illuminance : ");
-  Serial.println(temperaENV.readIlluminance());
 
->>>>>>> 0f3db7d0ea40db157dc539d83fe4ba427f92d3e0
+  Serial.println(temperaENV.readIlluminance());
 
 
   err = modem.endPacket(true);
@@ -126,12 +129,37 @@ Serial.println("Temperature")
   if (!modem.available()) {
     Serial.println("No downlink message received at this time.");
     return;
+  Serial.println(ENV.readIlluminance());
+
+  if (millis() - waitToSendMessage > 60000)
+  {
+    waitToSendMessage = millis();
+    modem.beginPacket();
+    modem.write(buffers, 8);
+    err = modem.endPacket(true);
+    if (err > 0)
+    {
+      Serial.println("Message sent correctly!");
+      // delay(10000);  // Try to get a longer delay for
+    }
+    else
+    {
+      Serial.println("Error sending message :(");
+      Serial.println("(you may send a limited amount of messages per minute, depending on the signal strength");
+      Serial.println("it may vary from 1 message every couple of seconds to 1 message every minute)");
+    }
+    delay(1000);
+    if (!modem.available())
+    {
+      Serial.println("No downlink message received at this time.");
+      return;
+    }
   }
   Serial.println();
 }
 
-
-void sendMessage() {
+void sendMessage()
+{
   Serial.println("Enter a message to send to network");
   Serial.println("(make sure that end-of-line 'NL' is enabled)");
 
@@ -140,21 +168,25 @@ void sendMessage() {
   String msg = "";
 
   Serial.print("Sending: " + msg + " - ");
-  for (unsigned int i = 0; i < msg.length(); i++) {
+  for (unsigned int i = 0; i < msg.length(); i++)
+  {
     Serial.print(msg[i] >> 4, HEX);
     Serial.print(msg[i] & 0xF, HEX);
     Serial.print(" ");
   }
 }
 
-void recieveMessage() {
+void recieveMessage()
+{
   char rcv[64];
   int i = 0;
-  while (modem.available()) {
+  while (modem.available())
+  {
     rcv[i++] = (char)modem.read();
   }
   Serial.print("Received: ");
-  for (unsigned int j = 0; j < i; j++) {
+  for (unsigned int j = 0; j < i; j++)
+  {
     Serial.print(rcv[j] >> 4, HEX);
     Serial.print(rcv[j] & 0xF, HEX);
     Serial.print(" ");
