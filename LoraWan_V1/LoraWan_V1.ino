@@ -97,16 +97,16 @@ void loop() {
 
   Serial.print("Temperature : ");
   Serial.println(ENV.readTemperature());
-  
-Serial.print("Humidity : ");
+
+  Serial.print("Humidity : ");
   Serial.println(ENV.readHumidity());
-  
-Serial.print("Pressure : ");
+
+  Serial.print("Pressure : ");
   Serial.println(ENV.readPressure());
-  
-Serial.print("Illuminance : ");
+
+  Serial.print("Illuminance : ");
   Serial.println(temperaENV.readIlluminance());
-  
+
 
 
   err = modem.endPacket(true);
