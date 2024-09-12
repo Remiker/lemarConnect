@@ -8,6 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
+      "cwd": "c:/Users/Titouan LASQUELLEC/Documents/01_IUT/S5_GEII/SAE/lemarConnect/LoraWan_V1",
+      "program": "c:/Users/Titouan LASQUELLEC/Documents/01_IUT/S5_GEII/SAE/lemarConnect/LoraWan_V1/build/Debug/outDebug",
       "cwd": "e:/BUT3/SAE5/SAE5_Arduino/LoraWan_V1",
       "program": "e:/BUT3/SAE5/SAE5_Arduino/LoraWan_V1/build/Debug/outDebug",
       "MIMode": "gdb",

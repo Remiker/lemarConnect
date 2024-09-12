@@ -100,6 +100,8 @@ void loop()
 
   // Sending of the two octets of temp via LoRa
 
+
+Serial.println("Temperature")
   Serial.print("Temperature : ");
   Serial.println(ENV.readTemperature());
 
@@ -110,6 +112,23 @@ void loop()
   Serial.println(ENV.readPressure());
 
   Serial.print("Illuminance : ");
+
+  Serial.println(temperaENV.readIlluminance());
+
+
+  err = modem.endPacket(true);
+  if (err > 0) {
+    Serial.println("Message sent correctly!");
+    //delay(10000);  // Try to get a longer delay for
+  } else {
+    Serial.println("Error sending message :(");
+    Serial.println("(you may send a limited amount of messages per minute, depending on the signal strength");
+    Serial.println("it may vary from 1 message every couple of seconds to 1 message every minute)");
+  }
+  delay(1000);
+  if (!modem.available()) {
+    Serial.println("No downlink message received at this time.");
+    return;
   Serial.println(ENV.readIlluminance());
 
   if (millis() - waitToSendMessage > 60000)
