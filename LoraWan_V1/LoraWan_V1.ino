@@ -133,16 +133,16 @@ void loop() {
     Serial.print(" ");
   }*/
   Serial.println();
-  char buffers[10];
+  uint8_t buffers[10];
   uint16_t temperature = ENV.readTemperature() * 100;
   buffers[0] = byte(temperature >> 8);
-  buffers[1] = byte(temperature && 0xFF00);
+  buffers[1] = byte(temperature & 0x00FF);
   int err;
   modem.beginPacket();
 
   modem.write(buffers, 2);
   // modem.print(temperature,HEX);
-  // modem.print(temperature);
+  // modem.print(temperature);\
   Serial.print("temperature : ");
   Serial.println(temperature);
   err = modem.endPacket(true);
