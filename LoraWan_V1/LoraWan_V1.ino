@@ -85,14 +85,20 @@ void loop() {
   buffers[6] = byte(illuminance >> 8);
   buffers[7] = byte(illuminance & 0x00FF);
   ////////////////////////////////////
+
+
+
+
+  
   ///// send data to TTN
   int err;
 
   modem.beginPacket();
 
-  modem.write(buffers, 2);  // Sending of the two octets of temp via LoRa
-  Serial.print("temperature : ");
-  Serial.println(temperature);
+  modem.write(buffers, 8);  // Sending of the two octets of temp via LoRa
+
+
+
 
   err = modem.endPacket(true);
   if (err > 0) {
