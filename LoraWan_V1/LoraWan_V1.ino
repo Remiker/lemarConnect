@@ -88,16 +88,17 @@ void loop() {
   ///// send data to TTN
   int err;
 
+
   modem.beginPacket();
 
-  modem.write(buffers, 2);  // Sending of the two octets of temp via LoRa
+  modem.write(buffers, 8);  // Sending of the two octets of temp via LoRa
   Serial.print("temperature : ");
   Serial.println(temperature);
 
   err = modem.endPacket(true);
   if (err > 0) {
     Serial.println("Message sent correctly!");
-    delay(10000);  // Try to get a longer delay for
+    //delay(10000);  // Try to get a longer delay for
   } else {
     Serial.println("Error sending message :(");
     Serial.println("(you may send a limited amount of messages per minute, depending on the signal strength");
