@@ -95,12 +95,18 @@ void loop() {
 
   modem.write(buffers, 8);  // Sending of the two octets of temp via LoRa
 
-  Serial.print("temperature : ");
-  Serial.println(temperature);
-
-
-
-
+  Serial.print("Temperature : ");
+  Serial.println(ENV.readTemperature());
+  
+Serial.print("Humidity : ");
+  Serial.println(ENV.readHumidity());
+  
+Serial.print("Pressure : ");
+  Serial.println(ENV.readPressure());
+  
+Serial.print("Illuminance : ");
+  Serial.println(temperaENV.readIlluminance());
+  
 
 
   err = modem.endPacket(true);
