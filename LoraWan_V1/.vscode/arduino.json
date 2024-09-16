@@ -1,4 +1,5 @@
 {
     "board": "arduino:samd:mkrwan1310",
-    "sketch": "LoraWan_V1.ino"
+    "sketch": "LoraWan_V1.ino",
+    "port": "COM7"
 }

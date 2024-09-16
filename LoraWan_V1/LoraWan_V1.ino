@@ -1,23 +1,23 @@
 #include <MKRWAN.h>
 #include <Arduino_MKRENV.h>
 #include <LoRa.h>
-LoRaModem modem;
 
 // Uncomment if using the Murata chip as a module
 // LoRaModem modem(Serial1);
 
 #include "arduino_secrets.h"
+LoRaModem modem;
+#define LORA_DELAY 10000
 // Please enter your sensitive data in the Secret tab or arduino_secrets.h
 String appEui = SECRET_APP_EUI;
 String appKey = SECRET_APP_KEY;
 int waitToSendMessage = 0;
+int enableDebug = 0;
 
 void setup()
 {
   // Setting up serial
   Serial.begin(115200);
-  while (!Serial)
-    ;
 
   // Setting up RF Band
   if (!modem.begin(EU868))
@@ -38,9 +38,12 @@ void setup()
   int connected = modem.joinOTAA(appEui, appKey);
   if (!connected)
   {
-    Serial.println("Something went wrong; are you indoor? Move near a window and retry");
-    while (1)
+    while (!connected)
     {
+      Serial.println("Something went wrong; are you indoor? Move near a window and retry");
+      Serial.println("Retrying...");
+      connected = modem.joinOTAA(appEui, appKey);
+      delay(1000);
     }
   }
 
@@ -49,7 +52,6 @@ void setup()
   // NOTE: independent of this setting, the modem will
   // not allow sending more than one message every 2 minutes,
   // this is enforced by firmware and can not be changed.
-  delay(1000);
 
   if (!ENV.begin())
   {
@@ -62,22 +64,7 @@ void setup()
 
 void loop()
 {
-  Serial.println();
-  // Serial.println("Enter a message to send to network");
-  // Serial.println("(make sure that end-of-line 'NL' is enabled)");
-
-  // while (!Serial.available());
-  // String msg ="";
-
-  Serial.println();
-  //  Serial.print("Sending: " + msg + " - ");
-  /*for (unsigned int i = 0; i < msg.length(); i++) {
-    Serial.print(msg[i] >> 4, HEX);
-    Serial.print(msg[i] & 0xF, HEX);
-    Serial.print(" ");
-  }*/
-  Serial.println();
-  uint8_t buffers[8];
+  uint8_t buffer[8];
   //// Get data from sensors
   uint16_t temperature = ENV.readTemperature() * 100;
   uint16_t humidity = ENV.readHumidity() * 100;
@@ -85,77 +72,60 @@ void loop()
   uint16_t illuminance = ENV.readIlluminance() * 100;
   ////////////////////////
   ///// Store Data in Buffer
-  buffers[0] = byte(temperature >> 8);
-  buffers[1] = byte(temperature & 0x00FF); //  fix error on mask
-  buffers[2] = byte(humidity >> 8);
-  buffers[3] = byte(humidity & 0x00FF);
-  buffers[4] = byte(pressure >> 8);
-  buffers[5] = byte(pressure & 0x00FF);
-  buffers[6] = byte(illuminance >> 8);
-  buffers[7] = byte(illuminance & 0x00FF);
+  buffer[0] = byte(temperature >> 8);
+  buffer[1] = byte(temperature & 0x00FF);
+  buffer[2] = byte(humidity >> 8);
+  buffer[3] = byte(humidity & 0x00FF);
+  buffer[4] = byte(pressure >> 8);
+  buffer[5] = byte(pressure & 0x00FF);
+  buffer[6] = byte(illuminance >> 8);
+  buffer[7] = byte(illuminance & 0x00FF);
   ////////////////////////////////////
 
-  ///// send data to TTN
-  int err;
+  /////////////// Data Debug
+  if (enableDebug)
+  {
+    Serial.print("Temperature : ");
+    Serial.println(ENV.readTemperature());
 
-  // Sending of the two octets of temp via LoRa
+    Serial.print("Humidity : ");
+    Serial.println(ENV.readHumidity());
 
+    Serial.print("Pressure : ");
+    Serial.println(ENV.readPressure());
 
-Serial.println("Temperature")
-  Serial.print("Temperature : ");
-  Serial.println(ENV.readTemperature());
-
-  Serial.print("Humidity : ");
-  Serial.println(ENV.readHumidity());
-
-  Serial.print("Pressure : ");
-  Serial.println(ENV.readPressure());
-
-  Serial.print("Illuminance : ");
-
-  Serial.println(temperaENV.readIlluminance());
-
-
-  err = modem.endPacket(true);
-  if (err > 0) {
-    Serial.println("Message sent correctly!");
-    //delay(10000);  // Try to get a longer delay for
-  } else {
-    Serial.println("Error sending message :(");
-    Serial.println("(you may send a limited amount of messages per minute, depending on the signal strength");
-    Serial.println("it may vary from 1 message every couple of seconds to 1 message every minute)");
+    Serial.print("Illuminance : ");
+    Serial.println(ENV.readIlluminance());
   }
-  delay(1000);
-  if (!modem.available()) {
-    Serial.println("No downlink message received at this time.");
-    return;
-  Serial.println(ENV.readIlluminance());
 
-  if (millis() - waitToSendMessage > 60000)
+  ///////////// send data to TTN
+  if (millis() - waitToSendMessage > LORA_DELAY)
   {
     waitToSendMessage = millis();
     modem.beginPacket();
-    modem.write(buffers, 8);
+    modem.write(buffer, 8);
+    int err;
     err = modem.endPacket(true);
-    if (err > 0)
+    if (enableDebug)
     {
-      Serial.println("Message sent correctly!");
-      // delay(10000);  // Try to get a longer delay for
+      if (err > 0)
+      {
+        Serial.println("Message sent correctly!");
+      }
+      else
+      {
+        Serial.println("Error sending message :(");
+        Serial.println("(you may send a limited amount of messages per minute, depending on the signal strength");
+        Serial.println("it may vary from 1 message every couple of seconds to 1 message every minute)");
+      }
     }
-    else
-    {
-      Serial.println("Error sending message :(");
-      Serial.println("(you may send a limited amount of messages per minute, depending on the signal strength");
-      Serial.println("it may vary from 1 message every couple of seconds to 1 message every minute)");
-    }
-    delay(1000);
     if (!modem.available())
     {
       Serial.println("No downlink message received at this time.");
       return;
     }
   }
-  Serial.println();
+  /////////////////////////////////
 }
 
 void sendMessage()
