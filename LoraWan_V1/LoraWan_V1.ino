@@ -7,7 +7,7 @@
 
 #include "arduino_secrets.h"
 LoRaModem modem;
-#define LORA_DELAY 10000
+#define LORA_DELAY 60000
 // Please enter your sensitive data in the Secret tab or arduino_secrets.h
 String appEui = SECRET_APP_EUI;
 String appKey = SECRET_APP_KEY;
@@ -38,6 +38,10 @@ void setup()
   int connected = modem.joinOTAA(appEui, appKey);
   if (!connected)
   {
+    Serial.print("Your module version is: ");
+  Serial.println(modem.version());
+  Serial.print("Your device EUI is: ");
+  Serial.println(modem.deviceEUI());
     while (!connected)
     {
       Serial.println("Something went wrong; are you indoor? Move near a window and retry");
@@ -61,15 +65,19 @@ void setup()
   }
   waitToSendMessage = millis();
 }
-
+uint16_t temperature;
+  uint16_t humidity ;
+  uint16_t pressure;
+  uint16_t illuminance ;
+   uint8_t buffer[8];
 void loop()
 {
-  uint8_t buffer[8];
+ 
   //// Get data from sensors
-  uint16_t temperature = ENV.readTemperature() * 100;
-  uint16_t humidity = ENV.readHumidity() * 100;
-  uint16_t pressure = ENV.readPressure() * 100;
-  uint16_t illuminance = ENV.readIlluminance() * 100;
+   temperature = ENV.readTemperature() * 100;
+   humidity = ENV.readHumidity() * 100;
+   pressure = ENV.readPressure() * 100;
+   illuminance = ENV.readIlluminance() * 100;
   ////////////////////////
   ///// Store Data in Buffer
   buffer[0] = byte(temperature >> 8);
@@ -85,17 +93,21 @@ void loop()
   /////////////// Data Debug
   if (enableDebug)
   {
-    Serial.print("Temperature : ");
-    Serial.println(ENV.readTemperature());
+    //Serial.print("Temperature : ");
+    //Serial.println(ENV.readTemperature());
 
-    Serial.print("Humidity : ");
-    Serial.println(ENV.readHumidity());
+    //Serial.print("Humidity : ");
+    //Serial.println(ENV.readHumidity());
 
-    Serial.print("Pressure : ");
-    Serial.println(ENV.readPressure());
-
+    //Serial.print("Pressure : ");
+    //Serial.println(ENV.readPressure());
+for(int x;x<8;x++)
+{
+  illuminance += ENV.readIlluminance() * 100;
+}
+illuminance = illuminance/9;
     Serial.print("Illuminance : ");
-    Serial.println(ENV.readIlluminance());
+    Serial.println(illuminance/100);
   }
 
   ///////////// send data to TTN
