@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Updates</title>
+</head>
+<body>
+    <h1>Real-Time Decoded Payload</h1>
+    <div id="payload">Waiting for updates...</div>
+
+    <script>
+        const eventSource = new EventSource("http://localhost:8000/events");
+
+        eventSource.onmessage = function(event) {
+            const payloadDiv = document.getElementById("payload");
+            const data = JSON.parse(event.data);
+            payloadDiv.textContent = JSON.stringify(data, null, 2);
+        };
+
+        eventSource.onerror = function() {
+            console.error("Connection lost. Trying to reconnect...");
+        };
+    </script>
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test SSE</title>
+</head>
+<body>
+    <h1>Test SSE</h1>
+    <pre id="output"></pre>
+
+    <script>
+        const output = document.getElementById("output");
+        const eventSource = new EventSource("http://0.0.0.0:8000/events");
+
+        eventSource.onmessage = function(event) {
+            output.textContent += event.data + "\n";
+        };
+
+        eventSource.onerror = function() {
+            console.error("Error occurred");
+            output.textContent += "Error occurred\n";
+        };
+    </script>
+</body>
+</html> -->

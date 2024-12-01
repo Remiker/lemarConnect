@@ -1,0 +1,5 @@
+fastapi==0.111.0
+paho-mqtt
+pymongo
+influxdb
+influxdb-client

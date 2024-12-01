@@ -1,0 +1,124 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+# volumes:
+#   mongodb_data: { driver: local }
+volumes:
+  influxdb-volume:
+
+networks:
+  monitoring:  # Define the monitoring network
+    driver: bridge
+
+services:
+  server:
+      build:
+        context: .
+      container_name: main_server
+      ports:
+        - 8000:8000
+      networks:
+        - monitoring
+  influxdb:
+    image: influxdb:2.7
+    restart: always
+    container_name: influxdbs
+    ports:
+      - "8086:8086"
+    networks:
+      - monitoring
+    volumes:
+      - influxdb-volume:/var/lib/influxdb
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=Jad
+      - DOCKER_INFLUXDB_INIT_PASSWORD=Remiker@135246
+      - DOCKER_INFLUXDB_INIT_ORG=IUT_Brest
+      - DOCKER_INFLUXDB_INIT_BUCKET=lemarconnect
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=dbpeD9hPjiWm4afsX5fEe0lUpAI6QtTeiXmkpTxrQgwfY58TzWscagn0Sr_M6jiD8kl-A3ZF-PA0LcRP2pLlNg==
+  
+   
+
+  # rocketchat:
+  #   image: registry.rocket.chat/rocketchat/rocket.chat:${RELEASE:-latest}
+  #   restart: always
+  #   labels:
+  #     traefik.enable: "true"
+  #     traefik.http.routers.rocketchat.rule: Host(`${DOMAIN:-}`)
+  #     traefik.http.routers.rocketchat.tls: "true"
+  #     traefik.http.routers.rocketchat.entrypoints: https
+  #     traefik.http.routers.rocketchat.tls.certresolver: le
+  #   environment:
+      #MONGO_URL: "${MONGO_URL:-\
+      #  mongodb://${MONGODB_ADVERTISED_HOSTNAME:-mongodb}:${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}/\
+       # ${MONGODB_DATABASE:-rocketchat}?replicaSet=${MONGODB_REPLICA_SET_NAME:-rs0}}"
+      #MONGO_OPLOG_URL: "${MONGO_OPLOG_URL:\
+       # -mongodb://${MONGODB_ADVERTISED_HOSTNAME:-mongodb}:${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}/\
+      #  local?replicaSet=${MONGODB_REPLICA_SET_NAME:-rs0}}"
+      # ROOT_URL: ${ROOT_URL:-http://localhost:${HOST_PORT:-3000}}
+      # PORT: ${PORT:-3000}
+      # DEPLOY_METHOD: docker
+      # DEPLOY_PLATFORM: ${DEPLOY_PLATFORM:-}
+      # REG_TOKEN: ${REG_TOKEN:-}
+   # depends_on:
+    #  - mongodb
+    # expose:
+    #   - ${PORT:-3000}
+    # ports:
+    #   - "${BIND_IP:-0.0.0.0}:${HOST_PORT:-3000}:${PORT:-3000}"
+
+  # mongodb:
+  #   image: docker.io/bitnami/mongodb:${MONGODB_VERSION:-6.0}
+  #   restart: always
+  #   volumes:
+  #     - mongodb_data:/bitnami/mongodb
+  #   environment:
+  #     MONGODB_REPLICA_SET_MODE: primary
+  #     MONGODB_REPLICA_SET_NAME: ${MONGODB_REPLICA_SET_NAME:-rs0}
+  #     MONGODB_PORT_NUMBER: ${MONGODB_PORT_NUMBER:-27017}
+  #     MONGODB_INITIAL_PRIMARY_HOST: ${MONGODB_INITIAL_PRIMARY_HOST:-mongodb}
+  #     MONGODB_INITIAL_PRIMARY_PORT_NUMBER: ${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}
+  #     MONGODB_ADVERTISED_HOSTNAME: ${MONGODB_ADVERTISED_HOSTNAME:-mongodb}
+  #     MONGODB_ENABLE_JOURNAL: ${MONGODB_ENABLE_JOURNAL:-true}
+  #     ALLOW_EMPTY_PASSWORD: ${ALLOW_EMPTY_PASSWORD:-yes}
+
+# The commented out section below is an example of how to define a PostgreSQL
+# database that your application can use. `depends_on` tells Docker Compose to
+# start the database before your application. The `db-data` volume persists the
+# database data between container restarts. The `db-password` secret is used
+# to set the database password. You must create `db/password.txt` and add
+# a password of your choosing to it before running `docker compose up`.
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#   db:
+#     image: postgres
+#     restart: always
+#     user: postgres
+#     secrets:
+#       - db-password
+#     volumes:
+#       - db-data:/var/lib/postgresql/data
+#     environment:
+#       - POSTGRES_DB=example
+#       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+#     expose:
+#       - 5432
+#     healthcheck:
+#       test: [ "CMD", "pg_isready" ]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+# volumes:
+#   db-data:
+# secrets:
+#   db-password:
+#     file: db/password.txt
+
