@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+
 app = FastAPI()
-# from influxdb import InfluxDBClient
 
 import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
@@ -12,43 +12,16 @@ import paho.mqtt.client as mqtt
 import json
 import asyncio
 
-#MONGO_URI = "mongodb://Jad:XkI1fA00Zp1ioyQl@193.54.246.79:27017/<LemarConnect>?ssl=true&authSource=admin"  # Replace with your MongoDB URI
-#DATABASE_NAME = "lemarconnect"  # Replace with your database name
-#COLLECTION_NAME = "payload"  # Replace with your collection name
 
 # token = os.environ.get("INFLUXDB_TOKEN")
 token = "dbpeD9hPjiWm4afsX5fEe0lUpAI6QtTeiXmkpTxrQgwfY58TzWscagn0Sr_M6jiD8kl-A3ZF-PA0LcRP2pLlNg=="
 org = "IUT_Brest"
-# url = "http://localhost:8086"
-url = "http://localhost:8086"
+url = "http://influxdb_docker:8086"
 write_client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
 bucket="lemarconnect"
-# clientdb = influxdb_client()
 write_api =  write_client.write_api(write_options=SYNCHRONOUS)
-   
-# point = Point("test_measurement").field("field1", 42)
-# try:
-#     write_api.write(bucket=bucket, org=org, record=point)
-#     print("Write successful")
-# except Exception as e:
-#     print(f"Write failed: {e}")
     
-
-
-#Configurer votre connexion InfluxDB
-#influxdb_host = 'localhost'  # Remplacez par l'adresse de votre serveur InfluxDB
-#influxdb_port = 8086          # Port par défaut pour InfluxDB
-#influxdb_database = 'lemarconnect'    # Remplacez par le nom de votre base de données
-#influxdb_user = 'Jad'   # Remplacez par votre nom d'utilisateur
-#influxdb_password = 'jadjadjad'  # Remplacez par votre mot de passe
-
-#Création du client InfluxDB
-#clientDB = InfluxDBClient(host=influxdb_host, port=influxdb_port, username=influxdb_user, password=influxdb_password, database=influxdb_database)
-# Connect to MongoDB
-# client = MongoClient(MONGO_URI)
-# db = client[DATABASE_NAME]
-# collection = db[COLLECTION_NAME]
 
 # Define the MQTT broker and port
 broker = "eu1.cloud.thethings.network"
@@ -80,30 +53,6 @@ def on_message(client, userdata, msg):
         x = json.loads(msg.payload.decode("utf-8"))
         decoded_payload["value"] = x["uplink_message"]["decoded_payload"]["humidity"]
         print(f"Decoded Payload: {decoded_payload['value']}")
-
-        # json_body = [
-        #         {
-        #             "measurement": "your_measurement",  # Remplacez par le nom de votre mesure
-        #             "tags": {
-        #                 "device": "lc-algue"  # Remplacez par des tags selon vos besoins
-        #             },
-        #             "fields": {
-        #                 "value": decoded_payload["value"]  # Remplacez par les champs que vous souhaitez stocker
-        #                 }
-        #         }
-        #     ]
-        # clientDB.write_points(json_body)
-        # Add metadata and store it in MongoDB
-
-        # document = {
-        #     id : message_id,
-        #     "payload": decoded_payload["value"],
-        #     # "timestamp": datetime.utcnow(),
-        #     "topic": msg.topic,
-        # }
-        # message_id += 1 
-        # collection.insert_one(document)
-        print("Data successfully inserted into MongoDB")
     except Exception as e:
         print(f"Error processing message: {e}")
 
@@ -118,10 +67,9 @@ clientmqtt.on_message = on_message
 
 # Connect to the MQTT broker
 clientmqtt.connect(broker, port,10)
-clientmqtt.loop_start()
 # Loop to maintain the connection and handle events
+clientmqtt.loop_start()
 
-#client.loop_forever()
 
 async def event_stream():
     while True:
@@ -136,15 +84,45 @@ async def sse_endpoint():
 
 @app.get("/")
 async def root():
-    for value in range(50):
+    value = 0
+    write_client.delete_api.delete()
+    while(value < 50):
             point = (
                 Point("measurement1")
-                .tag("_measurement", "boltdb_reads_total")
+                .tag("source", "test")
                 .field("counter", value)
             )
+            time.sleep(1) # separate points by 1 second
+            value += 1
     write_api.write(bucket=bucket, org=org, record=point)
+    query_api = write_client.query_api()
+    query = """from(bucket: "lemarconnect")
+    |> range(start: -30m)
+    |> filter(fn: (r) => r._measurement == "measurement1")"""
+    tables = query_api.query(query, org="IUT_Brest")
+
+    for table in tables:
+        for record in table.records:
+            print(record)
+            
     print("exited")
-    time.sleep(1) # separate points by 1 second
-    # if decoded_payload["value"] is None:
-    #     return {"message": "No payload received yet"}
+    
+    if decoded_payload["value"] is None:
+        return {"message": "No payload received yet"}
     return {"decoded_payload": decoded_payload["value"]}
+
+
+#################### to be used later ################
+
+# start_time = "1970-01-01T00:00:00Z"  # Beginning of time
+# stop_time = datetime.utcnow().isoformat() + "Z"  # Current time in UTC
+
+# # Specify the predicate (optional, filter by measurement, tag, or field)
+# predicate = '_measurement="your_measurement_name"'  # Replace with your measurement
+
+# # Perform the deletion
+# try:
+#     delete_api.delete(start_time, stop_time, predicate, bucket=bucket, org=org)
+#     print("Data deleted successfully.")
+# except Exception as e:
+#     print(f"Failed to delete data: {e}")
