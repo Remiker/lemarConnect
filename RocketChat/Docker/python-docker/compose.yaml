@@ -21,7 +21,11 @@ services:
         - 8000:8000
       depends_on:
         - influxdb
-      
+  grafana:
+    image: grafana/grafana:latest  
+    container_name: grafana_docker
+    ports:
+     - 3000:3000
   influxdb:
     image: influxdb:latest
     restart: always
@@ -30,14 +34,14 @@ services:
       - "8086:8086"
     volumes:
       - influxdb-volume:/var/lib/influxdbs
-    environment:
-      - DOCKER_INFLUXDB_INIT_MODE:setup
-      - DOCKER_INFLUXDB_INIT_USERNAME:Jad
-      - DOCKER_INFLUXDB_INIT_PASSWORD:Remiker@135246
-      - DOCKER_INFLUXDB_INIT_ORG:IUT_Brest
-      - DOCKER_INFLUXDB_INIT_BUCKET:lemarconnect
-      - DOCKER_INFLUXDB_INIT_RETENTION:1w
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN:dbpeD9hPjiWm4afsX5fEe0lUpAI6QtTeiXmkpTxrQgwfY58TzWscagn0Sr_M6jiD8kl-A3ZF-PA0LcRP2pLlNg==
+    # environment:
+    #   - DOCKER_INFLUXDB_INIT_MODE:setup
+    #   - DOCKER_INFLUXDB_INIT_USERNAME:Jad
+    #   - DOCKER_INFLUXDB_INIT_PASSWORD:Remiker@135246
+    #   - DOCKER_INFLUXDB_INIT_ORG:IUT_Brest
+    #   - DOCKER_INFLUXDB_INIT_BUCKET:lemarconnect
+    #   - DOCKER_INFLUXDB_INIT_RETENTION:1w
+    #   - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN:dbpeD9hPjiWm4afsX5fEe0lUpAI6QtTeiXmkpTxrQgwfY58TzWscagn0Sr_M6jiD8kl-A3ZF-PA0LcRP2pLlNg==
 
   # rocketchat:
   #   image: registry.rocket.chat/rocketchat/rocket.chat:${RELEASE:-latest}

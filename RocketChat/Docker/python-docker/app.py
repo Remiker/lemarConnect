@@ -71,21 +71,21 @@ clientmqtt.connect(broker, port,10)
 clientmqtt.loop_start()
 
 
-async def event_stream():
-    while True:
-        if decoded_payload["value"] is not None:
-            # Send the latest payload to the client
-            yield f"data: {json.dumps(decoded_payload['value'])}\n\n"
-        await asyncio.sleep(1)  # Send updates every second
+# async def event_stream():
+#     while True:
+#         if decoded_payload["value"] is not None:
+#             # Send the latest payload to the client
+#             yield f"data: {json.dumps(decoded_payload['value'])}\n\n"
+#         await asyncio.sleep(1)  # Send updates every second
 
-@app.get("/events")
-async def sse_endpoint():
-    return StreamingResponse(event_stream(), media_type="text/event-stream")
+# @app.get("/events")
+# async def sse_endpoint():
+#     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
 @app.get("/")
 async def root():
     value = 0
-    write_client.delete_api.delete()
+    # write_client.delete_api.delete()
     while(value < 50):
             point = (
                 Point("measurement1")
