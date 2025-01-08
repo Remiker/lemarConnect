@@ -10,16 +10,15 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 import paho.mqtt.client as mqtt
 import json
-import asyncio
 
 # Define token, org, url and bucket for influxDB after creating a user on influxDB server
 token = "dbpeD9hPjiWm4afsX5fEe0lUpAI6QtTeiXmkpTxrQgwfY58TzWscagn0Sr_M6jiD8kl-A3ZF-PA0LcRP2pLlNg=="
 org = "IUT_Brest"
 url = "http://influxdb_docker:8086"
 bucket="lemarconnect"
-write_client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
+write_client = influxdb_client.InfluxDBClient(url=url, token=token, org=org) # define write_client for influxDB
 
-write_api =  write_client.write_api(write_options=SYNCHRONOUS)
+write_api =  write_client.write_api(write_options=SYNCHRONOUS) # initialize write api for influxDB 
     
 
 # Define the MQTT broker and port
@@ -43,12 +42,13 @@ def on_connect(clientmqtt, userdata, flags, rc):
 decoded_payload = {"value": None} # initialize the variable globaly to be used later
 # Define the callback function for message receipt
 # Callback for receiving MQTT messages
-def on_message(client, userdata, msg):
+def on_message(client, userdata, msg): 
     global message_id
     try:
         # Parse the MQTT message
         x = json.loads(msg.payload.decode("utf-8"))
         decoded_payload["value"] = x["uplink_message"]["decoded_payload"]["humidity"] # get the value of humidity only
+        sendDataToInfluxDB(decoded_payload,'humidity') # sending data to influxDB, for now only humidity
         print(f"Decoded Payload: {decoded_payload['value']}")
     except Exception as e:
         print(f"Error processing message: {e}")
@@ -67,6 +67,15 @@ clientmqtt.connect(broker, port,10)
 # Loop to maintain the connection and handle events, it starts on different thread so it doesn't block the code
 clientmqtt.loop_start()
 
+def sendDataToInfluxDB(value,tag):
+    point = (
+                Point("measurement1")
+                .tag("source", tag)
+                .field("counter", value)
+            )
+    write_api.write(bucket=bucket, org=org, record=point)
+
+################# not needed! ##########
 
 # async def event_stream():
 #     while True:
@@ -81,18 +90,8 @@ clientmqtt.loop_start()
 
 @app.get("/")
 async def root():
-    value = 0
     # write_client.delete_api.delete()
-    while(value < 50):
-            point = (
-                Point("measurement1")
-                .tag("source", "test")
-                .field("counter", value)
-            )
-            value +=1
-            time.sleep(5) # separate points by 5 second
     # query to receive the values that have been registered on influxdb within the last 30 minutes, on point "measurement1"
-    write_api.write(bucket=bucket, org=org, record=point)
     query_api = write_client.query_api()
     query = """from(bucket: "lemarconnect")
     |> range(start: -30m)
@@ -103,7 +102,7 @@ async def root():
         for record in table.records:
             print(record)
             
-    print("exited")
+    # print("exited")
     
     if decoded_payload["value"] is None:
         return {"message": "No payload received yet"}
