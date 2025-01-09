@@ -90,6 +90,11 @@ def sendDataToInfluxDB(value,tag):
 
 @app.get("/")
 async def root():
+    x=0
+    while(x<5):
+        sendDataToInfluxDB(51+x,"temp")
+        time.sleep(1)
+        x+=1
     # write_client.delete_api.delete()
     # query to receive the values that have been registered on influxdb within the last 30 minutes, on point "measurement1"
     query_api = write_client.query_api()
