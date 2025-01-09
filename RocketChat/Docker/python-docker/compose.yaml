@@ -28,17 +28,6 @@ services:
       - influxdb
     ports:
      - 3000:3000
-  telegraf:
-    image: telegraf:latest
-    container_name: telegraf_docker
-    restart: always
-    depends_on:
-      - influxdb
-    volumes:
-      # Mount for telegraf config
-      - ./telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
-    # env_file:
-    #   - influxdb-volume.env
   influxdb:
     image: influxdb:latest
     restart: always

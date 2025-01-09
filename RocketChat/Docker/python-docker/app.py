@@ -10,7 +10,8 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 import paho.mqtt.client as mqtt
 import json
-
+import http
+import requests
 # Define token, org, url and bucket for influxDB after creating a user on influxDB server
 token = "dbpeD9hPjiWm4afsX5fEe0lUpAI6QtTeiXmkpTxrQgwfY58TzWscagn0Sr_M6jiD8kl-A3ZF-PA0LcRP2pLlNg=="
 org = "IUT_Brest"
@@ -39,7 +40,10 @@ def on_connect(clientmqtt, userdata, flags, rc):
         print("Failed to connect. Result code:", rc)
 
 
-decoded_payload = {"value": None} # initialize the variable globaly to be used later
+humidity = 0 # initialize the variable globaly to be used later
+temperature = 0
+lumo = 0
+pressure = 0
 # Define the callback function for message receipt
 # Callback for receiving MQTT messages
 def on_message(client, userdata, msg): 
@@ -47,9 +51,16 @@ def on_message(client, userdata, msg):
     try:
         # Parse the MQTT message
         x = json.loads(msg.payload.decode("utf-8"))
-        decoded_payload["value"] = x["uplink_message"]["decoded_payload"]["humidity"] # get the value of humidity only
-        sendDataToInfluxDB(decoded_payload,'humidity') # sending data to influxDB, for now only humidity
-        print(f"Decoded Payload: {decoded_payload['value']}")
+        humidity = x["uplink_message"]["decoded_payload"]["humidity"] # get the value of humidity only
+        print(f"Decoded Payload: ", humidity)
+        temperature = x["uplink_message"]["decoded_payload"]["temperature"] # get the value of humidity only
+        lumo = x["uplink_message"]["decoded_payload"]["illuminance"] # get the value of humidity only
+        pressure= x["uplink_message"]["decoded_payload"]["pressure"] # get the value of humidity only
+        sendDataToInfluxDB(humidity,"humidity") # sending data to influxDB, for now only humidity
+        sendDataToInfluxDB(temperature,"temperature")
+        sendDataToInfluxDB(lumo,"illuminance")
+        sendDataToInfluxDB(pressure,"pressure")
+        
     except Exception as e:
         print(f"Error processing message: {e}")
 
@@ -67,11 +78,11 @@ clientmqtt.connect(broker, port,10)
 # Loop to maintain the connection and handle events, it starts on different thread so it doesn't block the code
 clientmqtt.loop_start()
 
-def sendDataToInfluxDB(value,tag):
+def sendDataToInfluxDB(value,field):
     point = (
                 Point("measurement1")
-                .tag("source", tag)
-                .field("counter", value)
+                .tag("source", field)
+                .field("counter_float", float(value))
             )
     write_api.write(bucket=bucket, org=org, record=point)
 
@@ -95,7 +106,27 @@ async def root():
         sendDataToInfluxDB(51+x,"temp")
         time.sleep(1)
         x+=1
+    
+
+        # querys = """from(bucket: "lemarconnect")
+        # |> filter(fn: (r) => r._measurement == "average_temperature")
+        # |> mean()
+        # |> map(fn: (r) => ({r with jsonStr: string(v: json.encode(v: {"location": r.location, "mean": r._value}))}))
+        # |> map(
+        #     fn: (r) => ({
+        #         r with
+        #         status_code: http.post(
+        #             url: "http://somehost.com/",
+        #             headers: {x: "a", y: "b"},
+        #             data: bytes(v: r.jsonStr)
+        #         )
+        #     })"""
+
+    # query = """from(bucket: "lemarconnect")
+    # |> range(start: -30m)
+    # |> filter(fn: (r) => r._measurement == "measurement1")"""    
     # write_client.delete_api.delete()
+
     # query to receive the values that have been registered on influxdb within the last 30 minutes, on point "measurement1"
     query_api = write_client.query_api()
     query = """from(bucket: "lemarconnect")
@@ -109,9 +140,9 @@ async def root():
             
     # print("exited")
     
-    if decoded_payload["value"] is None:
+    if humidity == 0:
         return {"message": "No payload received yet"}
-    return {"decoded_payload": decoded_payload["value"]} # display the value on python_docker server
+    return {"decoded_payload": humidity} # display the value on python_docker server
 
 
 #################### to be used later ################

@@ -7,7 +7,7 @@
 
 #include "arduino_secrets.h"
 LoRaModem modem;
-#define LORA_DELAY 60000
+#define LORA_DELAY 3000
 // Please enter your sensitive data in the Secret tab or arduino_secrets.h
 String appEui = SECRET_APP_EUI;
 String appKey = SECRET_APP_KEY;
