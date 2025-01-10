@@ -25,11 +25,14 @@ write_api =  write_client.write_api(write_options=SYNCHRONOUS) # initialize writ
 # Define the MQTT broker and port
 broker = "eu1.cloud.thethings.network"
 port = 1883
-topic = "v3/lc-test@ttn/devices/lc-algue/up"
+# topic = "v3/lc-test@ttn/devices/lc-algue/up"
+topic = "v3/lc-esp32@ttn/devices/lc-esp32-1/up"
 
 #topic = "v3/+/devices/+/up" # gets all the devices on the account
-username = "lc-test@ttn"  # Replace with your username
-password = "NNSXS.W7SM22UBUMSCDHB6CVEK5IDSH6RSFOUNWNRKUZQ.SZRQNBQNMLUZU343R7Q7EWJ4XQPAO66LUSSUFLI5WJWLM5GM7YPQ"  # Replace with your password
+username = "lc-esp32@ttn"
+password = "NNSXS.FS5OHJU7VMO6LBMMK3HMEEUAHRXA4WZTUNFFHDA.2P4JP5KCTUSOXPCVA3AK3BECGL5YVIYY2EE4RQLVJZ53CMERZ2PQ"
+# username = "lc-test@ttn"  # Replace with your username
+# password = "NNSXS.W7SM22UBUMSCDHB6CVEK5IDSH6RSFOUNWNRKUZQ.SZRQNBQNMLUZU343R7Q7EWJ4XQPAO66LUSSUFLI5WJWLM5GM7YPQ"  # Replace with your password
 # Define the callback function for connection
 def on_connect(clientmqtt, userdata, flags, rc):
     print(f"Connected with result code {rc}")
@@ -52,14 +55,14 @@ def on_message(client, userdata, msg):
         # Parse the MQTT message
         x = json.loads(msg.payload.decode("utf-8"))
         humidity = x["uplink_message"]["decoded_payload"]["humidity"] # get the value of humidity only
-        print(f"Decoded Payload: ", humidity)
+        # print(f"Decoded Payload: ", humidity)
         temperature = x["uplink_message"]["decoded_payload"]["temperature"] # get the value of humidity only
         lumo = x["uplink_message"]["decoded_payload"]["illuminance"] # get the value of humidity only
-        pressure= x["uplink_message"]["decoded_payload"]["pressure"] # get the value of humidity only
+        # pressure= x["uplink_message"]["decoded_payload"]["pressure"] # get the value of humidity only
         sendDataToInfluxDB(humidity,"humidity") # sending data to influxDB, for now only humidity
         sendDataToInfluxDB(temperature,"temperature")
         sendDataToInfluxDB(lumo,"illuminance")
-        sendDataToInfluxDB(pressure,"pressure")
+        # sendDataToInfluxDB(pressure,"pressure")
         
     except Exception as e:
         print(f"Error processing message: {e}")

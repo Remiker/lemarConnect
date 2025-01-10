@@ -55,7 +55,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "ee9kapeot0zcwc"
       },
       "fieldConfig": {
         "defaults": {
@@ -95,6 +95,7 @@
               "mode": "off"
             }
           },
+          "displayName": "Temperature",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -108,9 +109,26 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "celsius"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "counter_float temperature"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#73BF69",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -118,10 +136,12 @@
         "x": 0,
         "y": 0
       },
-      "id": 5,
+      "id": 3,
       "options": {
         "legend": {
-          "calcs": [],
+          "calcs": [
+            "lastNotNull"
+          ],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -134,21 +154,21 @@
       "pluginVersion": "11.3.1",
       "targets": [
         {
-          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"pressure\")",
-          "refId": "A",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          }
+            "uid": "ee9kapeot0zcwc"
+          },
+          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"temperature\")",
+          "refId": "A"
         }
       ],
-      "title": "Pressure",
+      "title": "Temperature",
       "type": "timeseries"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "ee9kapeot0zcwc"
       },
       "fieldConfig": {
         "defaults": {
@@ -188,6 +208,7 @@
               "mode": "off"
             }
           },
+          "displayName": "Illuminance",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -201,7 +222,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "lux"
         },
         "overrides": []
       },
@@ -214,7 +236,9 @@
       "id": 4,
       "options": {
         "legend": {
-          "calcs": [],
+          "calcs": [
+            "lastNotNull"
+          ],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -227,12 +251,12 @@
       "pluginVersion": "11.3.1",
       "targets": [
         {
-          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"illuminance\")",
-          "refId": "A",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          }
+            "uid": "ee9kapeot0zcwc"
+          },
+          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"illuminance\")",
+          "refId": "A"
         }
       ],
       "title": "Illuminance",
@@ -241,7 +265,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "ee9kapeot0zcwc"
       },
       "fieldConfig": {
         "defaults": {
@@ -281,6 +305,7 @@
               "mode": "off"
             }
           },
+          "displayName": "Humidity",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -294,100 +319,8 @@
                 "value": 80
               }
             ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 8
-      },
-      "id": 3,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"temperature\")",
-          "refId": "A",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          }
-        }
-      ],
-      "title": "Temperature",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
           },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -400,7 +333,9 @@
       "id": 2,
       "options": {
         "legend": {
-          "calcs": [],
+          "calcs": [
+            "lastNotNull"
+          ],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -413,17 +348,17 @@
       "pluginVersion": "11.3.1",
       "targets": [
         {
-          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"humidity\")\r\n",
-          "refId": "A",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
-          }
+            "uid": "ee9kapeot0zcwc"
+          },
+          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"humidity\")\r\n",
+          "refId": "A"
         },
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "ee9kapeot0zcwc"
           },
           "hide": false,
           "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter\" and r.source == \"humidity\")\r\n",
@@ -448,6 +383,6 @@
   "timezone": "browser",
   "title": "first_dashboard",
   "uid": "ae9ghttcr36rkd",
-  "version": 16,
+  "version": 9,
   "weekStart": ""
 }

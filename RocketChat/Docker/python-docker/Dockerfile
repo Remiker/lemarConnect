@@ -20,6 +20,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+
+# COPY ./grafana/dashboards /var/lib/grafana/dashboards 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
 
@@ -75,14 +77,32 @@ WORKDIR /app
 #   | xargs -r apt-mark manual \
 #   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 
-RUN groupadd -r rocketchat \
-  && useradd -r -g rocketchat rocketchat \
-  && mkdir -p /app/uploads \
-  && chown rocketchat:rocketchat /app/uploads
+# RUN groupadd -r rocketchat \
+#   && useradd -r -g rocketchat rocketchat \
+#   && mkdir -p /app/uploads \
+#   && chown rocketchat:rocketchat /app/uploads
 
 VOLUME /app/uploads
 
 ENV RC_VERSION 7.0.0
+
+
+# FROM grafana/grafana:latest
+
+# # Add provisioning configuration for dashboards
+
+# # Add your JSON dashboard(s)
+# COPY first_dashboard-1736497773151.json /etc/grafana/provisioning/dashboards/
+# ADD ./dashboard.yaml /grafana/provisioning/dashboards/dashboard.yaml
+
+# # ## Paths
+# ENV GF_PATHS_PROVISIONING="/grafana/provisioning"
+# # #Add the configuration
+# ADD ./provisioning /grafana/provisioning
+# # #Add the Dashboard
+# ADD ./dashboards /grafana/dashboards
+
+# ENV GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/first_dashboard.json
 
 ARG UID=10001
 RUN adduser \
