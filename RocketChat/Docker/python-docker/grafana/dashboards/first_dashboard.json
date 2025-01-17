@@ -1,35 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_INFLUXDB",
-      "label": "influxdb",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    }
-  ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "11.3.1"
-    },
-    {
-      "type": "datasource",
-      "id": "influxdb",
-      "name": "InfluxDB",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -49,9 +18,302 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 3,
   "links": [],
   "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "panels": [],
+      "title": "ESP32",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ee9kapeot0zcwc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "query": "from(bucket: \"lemarconnect\")\r\n|> range(start: -1h)\r\n|> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"esp-device\" and r.source == \"humidity\")\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Humidity",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ee9kapeot0zcwc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "query": "from(bucket: \"lemarconnect\")\r\n|> range(start: -1h)\r\n|> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"esp-device\" and r.source == \"temperature\")\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Temperature",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ee9kapeot0zcwc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "query": "from(bucket: \"lemarconnect\")\r\n|> range(start: -1h)\r\n|> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"esp-device\" and r.source == \"illuminance\")\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "illuminance",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 5,
+      "panels": [],
+      "title": "Lc-algue",
+      "type": "row"
+    },
     {
       "datasource": {
         "type": "influxdb",
@@ -134,7 +396,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 18
       },
       "id": 3,
       "options": {
@@ -158,7 +420,7 @@
             "type": "influxdb",
             "uid": "ee9kapeot0zcwc"
           },
-          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"temperature\")",
+          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"lc-algue\" and r.source == \"temperature\")",
           "refId": "A"
         }
       ],
@@ -231,7 +493,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 18
       },
       "id": 4,
       "options": {
@@ -255,7 +517,7 @@
             "type": "influxdb",
             "uid": "ee9kapeot0zcwc"
           },
-          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"illuminance\")",
+          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"lc-algue\" and r.source == \"illuminance\")",
           "refId": "A"
         }
       ],
@@ -328,7 +590,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 26
       },
       "id": 2,
       "options": {
@@ -352,23 +614,15 @@
             "type": "influxdb",
             "uid": "ee9kapeot0zcwc"
           },
-          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter_float\" and r.source == \"humidity\")\r\n",
+          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"lc-algue\" and r.source == \"humidity\")\r\n",
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "ee9kapeot0zcwc"
-          },
-          "hide": false,
-          "query": "from(bucket: \"lemarconnect\")\r\n    |> range(start: -1h)\r\n    |> filter(fn: (r) => r._measurement == \"measurement1\" and r._field == \"counter\" and r.source == \"humidity\")\r\n",
-          "refId": "B"
         }
       ],
       "title": "Humidity",
       "type": "timeseries"
     }
   ],
+  "preload": false,
   "refresh": "10s",
   "schemaVersion": 40,
   "tags": [],
@@ -383,6 +637,6 @@
   "timezone": "browser",
   "title": "first_dashboard",
   "uid": "ae9ghttcr36rkd",
-  "version": 9,
+  "version": 6,
   "weekStart": ""
 }

@@ -46,8 +46,56 @@ services:
       - "8086:8086"
     volumes:
       - influxdb-volume:/var/lib/influxdbs
+  rocketchat:
+    image: rocketchat/rocket.chat:latest
+    container_name: rocketChat_docker
+    restart: always
+    volumes:
+      - ./uploads:/app/uploads
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.rocketchat.rule: Host(`${DOMAIN:-}`)
+      traefik.http.routers.rocketchat.tls: "true"
+      traefik.http.routers.rocketchat.entrypoints: https
+      traefik.http.routers.rocketchat.tls.certresolver: le
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+      - MONGO_OPLOG_URL=mongodb://mongo:27017/local
+      - ROOT_URL=http://rocketChat_dockers:3001
+      - BYPASS_OPLOG_VALIDATION=true
+      # - ADMIN_EMAIL=admin@example.com
+      - Accounts_AllowAnonymousRead=true       # Allow anonymous read access
+      - Accounts_AllowGuestAccess=true        # Allow guest access
+      - API_Enable_RateLimiter=false  
+      #- PORT=3001
+      # - ROOT_URL=http://localhost:3001
+      # - MONGO_URL=mongodb://mongo:27017/rocketchat?directConnection=true
+      # - MONGO_OPLOG_URL=mongodb://mongo:27017/local
+      # - OVERWRITE_SETTING_API_Enable_Rate_Limiter=false
+      # - OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enforce_Password_Fallback=false
+      # - CREATE_TOKENS_FOR_USERS=true
+      # - ROCKETCHAT_LICENSE=${ROCKETCHAT_LICENSE}
+      # - LICENSE_DEBUG=true
+    depends_on:
+      - mongo
+    ports:
+      - "3001:3000"
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
     # to be added later  
     # environments: 
+    #   MONGODB_REPLICA_SET_MODE: primary
+    #   MONGODB_REPLICA_SET_NAME: ${MONGODB_REPLICA_SET_NAME:-rs0}
+    #   MONGODB_PORT_NUMBER: ${MONGODB_PORT_NUMBER:-27017}
+    #   MONGODB_INITIAL_PRIMARY_HOST: ${MONGODB_INITIAL_PRIMARY_HOST:-mongodb}
+    #   MONGODB_INITIAL_PRIMARY_PORT_NUMBER: ${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}
+    #   MONGODB_ADVERTISED_HOSTNAME: ${MONGODB_ADVERTISED_HOSTNAME:-mongodb}
     # - DOCKER_INFLUXDB_INIT_MODE=setup
     # - DOCKER_INFLUXDB_INIT_USERNAME=yourInfluxAccount
     # - DOCKER_INFLUXDB_INIT_PASSWORD=yourInfluxPassword
@@ -59,6 +107,7 @@ services:
 volumes:
   influxdb-volume:
   grafana-storage:
+  mongo-data:
     # environment:
     #   - DOCKER_INFLUXDB_INIT_MODE:setup
     #   - DOCKER_INFLUXDB_INIT_ORG:IUT_Brest
