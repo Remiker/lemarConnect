@@ -8,7 +8,7 @@ This devkit was designed to simplify LoRa prototyping. The main PCB and sensors 
 
 
 ## How to run the project
-# Hardware :
+### Hardware :
 
 - A CP2102 programer (or any other type of TTL to UART converter)-
   - Without RTS and DTR : [HiLego - CP2102 ](https://www.amazon.fr/HiLetgo-CP2102-Module-convertisseur-s%C3%A9rie/dp/B00LODGRV8)
