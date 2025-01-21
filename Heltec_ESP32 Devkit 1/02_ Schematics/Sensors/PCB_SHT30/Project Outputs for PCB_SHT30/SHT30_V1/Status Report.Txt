@@ -1,0 +1,28 @@
+Output: Gerber Files
+Type  : Gerber
+From  : Variant [[No Variations]] of Project [PCB_SHT30.PrjPcb]
+   Generated File[PCB_SHT30.GTO]
+   Generated File[PCB_SHT30.GTP]
+   Generated File[PCB_SHT30.GTS]
+   Generated File[PCB_SHT30.GTL]
+   Generated File[PCB_SHT30.GBL]
+   Generated File[PCB_SHT30.GBS]
+   Generated File[PCB_SHT30.GBP]
+   Generated File[PCB_SHT30.GBO]
+   Generated File[PCB_SHT30.GM1]
+   Generated File[PCB_SHT30.GM13]
+   Generated File[PCB_SHT30.GM15]
+   Generated File[PCB_SHT30.GKO]
+   Generated File[PCB_SHT30.GPT]
+   Generated File[PCB_SHT30.GPB]
+   Generated File[PCB_SHT30.GD1]
+   Generated File[PCB_SHT30.GG1]
+   Generated File[PCB_SHT30.GM]
+   Generated File[PCB_SHT30.EXTREP]
+   Generated File[PCB_SHT30.REP]
+
+
+Files Generated   : 19
+Documents Printed : 0
+
+Finished Output Generation At 13:26:54 On 05/12/2024

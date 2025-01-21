@@ -1,0 +1,4 @@
+Added Pin To Net: NetName=NetP1_1 Pin=P1-1
+Added Pin To Net: NetName=NetP1_1 Pin=Q_Sensor-1
+Added Pin To Net: NetName=NetP1_1 Pin=R?-2
+Added Net: Name=NetP1_1

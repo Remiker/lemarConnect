@@ -1,0 +1,13 @@
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [PCB_SHT30.PrjPcb]
+   Generated File[PCB_SHT30.TXT]
+   Generated File[PCB_SHT30.DRL]
+   Generated File[PCB_SHT30.LDP]
+   Generated File[PCB_SHT30.DRR]
+
+
+Files Generated   : 4
+Documents Printed : 0
+
+Finished Output Generation At 22:00:55 On 05/12/2024
