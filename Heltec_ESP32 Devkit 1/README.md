@@ -2,8 +2,11 @@
 The HT-CT62 is an ESP32-based module featuring LoRa capabilities powered by the SX1262 chip.
 
 This devkit was designed to simplify LoRa prototyping. The main PCB and sensors are optimized for seamless integration with breadboards, ensuring an easy and efficient prototyping experience. Additionally, we prioritized affordability, keeping the production cost per card under 10€, making it an accessible and cost-effective solution for developers.
-[
+
+
 ![Picture](https://github.com/Remiker/lemarConnect/blob/tl_branch/Heltec_ESP32%20Devkit%201/_assets/HTCT62%20and%20Sensors.jpg?raw=true)
+
+
 ## How to run the project
 # Hardware :
 
