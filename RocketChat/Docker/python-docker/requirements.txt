@@ -3,3 +3,7 @@ paho-mqtt
 pymongo
 influxdb
 influxdb-client
+RocketChat_API
+# selenium
+# websocket
+# websocket-client
