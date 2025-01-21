@@ -8,7 +8,7 @@ This devkit was designed to simplify LoRa prototyping. The main PCB and sensors 
 
 - A CP2102 programer (or any other type of TTL to UART converter)-
   - Without RTS and DTR : [HiLego - CP2102 ](https://www.amazon.fr/HiLetgo-CP2102-Module-convertisseur-s%C3%A9rie/dp/B00LODGRV8)
-  - With RTS and DTR : [USB TTL Module] (https://www.amazon.fr/dp/B092ZQ4T9D?ref=ppx_yo2ov_dt_b_fed_asin_title)
+  - With RTS and DTR : [USB TTL Module](https://www.amazon.fr/dp/B092ZQ4T9D?ref=ppx_yo2ov_dt_b_fed_asin_title)
 - 2 Breadboard clipped on the sides (It doesnt fit on one)
 - Any alimentation that can deliver 3.3V and up to 100mA (mabe in the worst condition 150mA, we never came above 100mA)
 ### Software:
