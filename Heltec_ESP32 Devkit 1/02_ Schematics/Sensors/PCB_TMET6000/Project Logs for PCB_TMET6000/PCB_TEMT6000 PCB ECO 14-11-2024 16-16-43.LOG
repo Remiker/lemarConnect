@@ -1,0 +1,4 @@
+Change Component Designator: OldDesignator=R=10k NewDesignator=R?
+Change Component Designator: OldDesignator=TEMT600 NewDesignator=Q_Sensor
+Added Pin To Net: NetName=GND Pin=P1-1
+Added Pin To Net: NetName=GND Pin=R?-1
