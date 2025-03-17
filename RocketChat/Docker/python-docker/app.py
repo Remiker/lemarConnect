@@ -73,7 +73,7 @@ def get_messages():
 
 
 # Define token, org, url and bucket for influxDB after creating a user on influxDB server
-token = "dbpeD9hPjiWm4afsX5fEe0lUpAI6QtTeiXmkpTxrQgwfY58TzWscagn0Sr_M6jiD8kl-A3ZF-PA0LcRP2pLlNg=="
+token = "E3pfPaw3V460ihs8GBHhafFNmD2sbM4fGiGMGTrlwlyxH08yl53-gQldAQJtg5nH3PfpK1eMX42LXlyajhABXg=="
 org = "IUT_Brest"
 url = "http://influxdb_docker:8086"
 bucket="lemarconnect"
@@ -190,7 +190,8 @@ async def root():
     # rocket = RocketChat('jad', 'JadJad', server_url='http://rocketChat_docker:3000')
     # rocket.chat_post_message('good news everyone!', channel='general')
     # rocket.chat_update()
-    send_rocketchat_alert("Alert: CPU usage is above 90", CHANNEL, ROCKETCHAT_URL, USER_ID, AUTH_TOKEN)
+    # send_rocketchat_alert("Alert: CPU usage is above 90", CHANNEL, ROCKETCHAT_URL, USER_ID, AUTH_TOKEN)
+    send_rocketchat_alert("Alert: CPU usage is above 90", "@Jad", ROCKETCHAT_URL, USER_ID, AUTH_TOKEN)
     # driver = webdriver.Chrome()
     # driver.get("http://localhost:3001")
     # driver.refresh()
