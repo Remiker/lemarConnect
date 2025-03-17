@@ -19,6 +19,8 @@ services:
       ports:
         - 8000:8000
       depends_on:
+        - mongo
+        - rocketchat
         - influxdb
   grafana:
     build: 
@@ -46,8 +48,36 @@ services:
       - "8086:8086"
     volumes:
       - influxdb-volume:/var/lib/influxdbs
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE:setup
+      - DOCKER_INFLUXDB_INIT_ORG:IUT_Brest
+      - DOCKER_INFLUXDB_INIT_BUCKET:lemarconnect
+      - DOCKER_INFLUXDB_INIT_RETENTION:1w
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN:E3pfPaw3V460ihs8GBHhafFNmD2sbM4fGiGMGTrlwlyxH08yl53-gQldAQJtg5nH3PfpK1eMX42LXlyajhABXg==
+      
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo_docker
+    restart: unless-stopped
+    # command: mongod --replSet rs0
+    volumes:
+      - mongo-data:/data/db
+      # - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    ports:
+      - "27017:27017"
+    # to be added later  
+    environment: 
+      - USE_NATIVE_OPLOG=true
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_PORT_NUMBER=27017
+      - MONGODB_REPLICA_SET_MODE=primary
+      # - MONGODB_INITIAL_PRIMARY_HOST=${MONGODB_INITIAL_PRIMARY_HOST:-mongodb}
+      # - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}
+      # - MONGODB_ADVERTISED_HOSTNAME=${MONGODB_ADVERTISED_HOSTNAME:-mongodb}
+      - ALLOW_EMPTY_PASSWORD=yes
   rocketchat:
-    image: rocketchat/rocket.chat:latest
+    image: rocketchat/rocket.chat:7.2.1
     container_name: rocketChat_docker
     restart: always
     volumes:
@@ -59,8 +89,10 @@ services:
       traefik.http.routers.rocketchat.entrypoints: https
       traefik.http.routers.rocketchat.tls.certresolver: le
     environment:
-      - MONGO_URL=mongodb://mongo:27017/rocketchat
-      - MONGO_OPLOG_URL=mongodb://mongo:27017/local
+      # - MONGO_URL="${MONGO_URL:-mongodb://${MONGODB_ADVERTISED_HOSTNAME:-mongodb}:${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}/${MONGODB_DATABASE:-rocketchat}?replicaSet=${MONGODB_REPLICA_SET_NAME:-rs0}}"
+      # - MONGO_OPLOG_URL="${MONGO_OPLOG_URL:-mongodb://${MONGODB_ADVERTISED_HOSTNAME:-mongodb}:${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}/local?replicaSet=${MONGODB_REPLICA_SET_NAME:-rs0}}"
+      - MONGO_URL=mongodb://mongo_docker:27017/rocketchat
+      - MONGO_OPLOG_URL=mongodb://mongo_docker:27017/local
       - ROOT_URL=http://rocketChat_dockers:3001
       - BYPASS_OPLOG_VALIDATION=true
       # - ADMIN_EMAIL=admin@example.com
@@ -80,24 +112,9 @@ services:
       - mongo
     ports:
       - "3001:3000"
-  mongo:
-    image: mongo:6.0
-    container_name: mongo
-    restart: unless-stopped
-    volumes:
-      - mongo-data:/data/db
-    ports:
-      - "27017:27017"
-    # to be added later  
-    # environments: 
-    #   MONGODB_REPLICA_SET_MODE: primary
-    #   MONGODB_REPLICA_SET_NAME: ${MONGODB_REPLICA_SET_NAME:-rs0}
-    #   MONGODB_PORT_NUMBER: ${MONGODB_PORT_NUMBER:-27017}
-    #   MONGODB_INITIAL_PRIMARY_HOST: ${MONGODB_INITIAL_PRIMARY_HOST:-mongodb}
-    #   MONGODB_INITIAL_PRIMARY_PORT_NUMBER: ${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}
-    #   MONGODB_ADVERTISED_HOSTNAME: ${MONGODB_ADVERTISED_HOSTNAME:-mongodb}
-    # - DOCKER_INFLUXDB_INIT_MODE=setup
-    # - DOCKER_INFLUXDB_INIT_USERNAME=yourInfluxAccount
+ 
+      # - DOCKER_INFLUXDB_INIT_MODE=setup
+      # - DOCKER_INFLUXDB_INIT_USERNAME=yourInfluxAccount
     # - DOCKER_INFLUXDB_INIT_PASSWORD=yourInfluxPassword
     # - DOCKER_INFLUXDB_INIT_ORG=IUT_Brest
     # - DOCKER_INFLUXDB_INIT_BUCKET=lemarconnect
