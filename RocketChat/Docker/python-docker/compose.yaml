@@ -54,6 +54,7 @@ services:
       - DOCKER_INFLUXDB_INIT_BUCKET:lemarconnect
       - DOCKER_INFLUXDB_INIT_RETENTION:1w
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN:E3pfPaw3V460ihs8GBHhafFNmD2sbM4fGiGMGTrlwlyxH08yl53-gQldAQJtg5nH3PfpK1eMX42LXlyajhABXg==
+      
 
   mongo:
     image: mongo:7.0
