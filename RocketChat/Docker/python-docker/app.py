@@ -58,20 +58,6 @@ def get_messages():
             print("No new messages.")
     else:
         print("Failed to fetch messages:", response.text)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Define token, org, url and bucket for influxDB after creating a user on influxDB server
 token = "E3pfPaw3V460ihs8GBHhafFNmD2sbM4fGiGMGTrlwlyxH08yl53-gQldAQJtg5nH3PfpK1eMX42LXlyajhABXg=="
 org = "IUT_Brest"
