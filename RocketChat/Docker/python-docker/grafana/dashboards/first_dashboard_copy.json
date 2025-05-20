@@ -121,7 +121,8 @@
         }
       ],
       "title": "Humidity",
-      "type": "timeseries"
+      "type": "timeseries",
+      "unit":"percent"
     },
     {
       "datasource": {
@@ -210,7 +211,8 @@
         }
       ],
       "title": "Temperature",
-      "type": "timeseries"
+      "type": "timeseries",
+      "unit":"celsius"
     },
     {
       "datasource": {
@@ -299,7 +301,8 @@
         }
       ],
       "title": "illuminance",
-      "type": "timeseries"
+      "type": "timeseries",
+      "unit":"lux"
     },
     {
       "collapsed": false,

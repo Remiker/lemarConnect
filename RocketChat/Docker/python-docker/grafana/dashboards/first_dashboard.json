@@ -90,7 +90,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit":"percent"
         },
         "overrides": []
       },
@@ -122,6 +123,7 @@
       ],
       "title": "Humidity",
       "type": "timeseries"
+      
     },
     {
       "datasource": {
@@ -179,7 +181,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit":"celsius"
         },
         "overrides": []
       },
@@ -211,6 +214,7 @@
       ],
       "title": "Temperature",
       "type": "timeseries"
+      
     },
     {
       "datasource": {
@@ -268,7 +272,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit":"lux"
         },
         "overrides": []
       },

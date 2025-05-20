@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "e:/BUT3/SAE5/SAE5_Arduino/Heltec_ESP32 Devkit 1/00_Unitary_test/I2C_Read_SHT30",
+      "program": "e:/BUT3/SAE5/SAE5_Arduino/Heltec_ESP32 Devkit 1/00_Unitary_test/I2C_Read_SHT30/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

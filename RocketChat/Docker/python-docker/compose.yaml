@@ -41,19 +41,22 @@ services:
     # environment:
     #   - GF_PROVISIONING_DASHBOARDS_PATH=/etc/grafana/provisioning/dashboards
   influxdb:
-    image: influxdb:latest
+    image: influxdb:2.7
     restart: unless-stopped
     container_name: influxdb_docker
     ports:
       - "8086:8086"
     volumes:
-      - influxdb-volume:/var/lib/influxdbs
+      - influxdb-volume:/var/lib/influxdb
     environment:
-      - DOCKER_INFLUXDB_INIT_MODE:setup
-      - DOCKER_INFLUXDB_INIT_ORG:IUT_Brest
-      - DOCKER_INFLUXDB_INIT_BUCKET:lemarconnect
-      - DOCKER_INFLUXDB_INIT_RETENTION:1w
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN:E3pfPaw3V460ihs8GBHhafFNmD2sbM4fGiGMGTrlwlyxH08yl53-gQldAQJtg5nH3PfpK1eMX42LXlyajhABXg==
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - INFLUXD_HTTP_AUTH_ENABLED=false
+      - DOCKER_INFLUXDB_INIT_USERNAME=test
+      - DOCKER_INFLUXDB_INIT_PASSWORD=testtest123
+      - DOCKER_INFLUXDB_INIT_ORG=IUT_Brest
+      - DOCKER_INFLUXDB_INIT_BUCKET=lemarconnect
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=deGkuJVrTjkpFVzq052-udq2HKzlAvJGtL0JpxuNChE5uO8WtzOi-I6pqf2--s9E3eqdDG-Ao4ikLEoeg4NOyw==
       
 
   mongo:
@@ -95,7 +98,9 @@ services:
       - MONGO_OPLOG_URL=mongodb://mongo_docker:27017/local
       - ROOT_URL=http://rocketChat_dockers:3001
       - BYPASS_OPLOG_VALIDATION=true
-      # - ADMIN_EMAIL=admin@example.com
+      - ADMIN_EMAIL=admin@example.com
+      - ADMIN_PASS=testtest123
+      - ADMIN_USERBANE=Jad
       - Accounts_AllowAnonymousRead=true       # Allow anonymous read access
       - Accounts_AllowGuestAccess=true        # Allow guest access
       - API_Enable_RateLimiter=false  
@@ -104,7 +109,7 @@ services:
       # - MONGO_URL=mongodb://mongo:27017/rocketchat?directConnection=true
       # - MONGO_OPLOG_URL=mongodb://mongo:27017/local
       # - OVERWRITE_SETTING_API_Enable_Rate_Limiter=false
-      # - OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enforce_Password_Fallback=false
+      - OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enforce_Password_Fallback=false
       # - CREATE_TOKENS_FOR_USERS=true
       # - ROCKETCHAT_LICENSE=${ROCKETCHAT_LICENSE}
       # - LICENSE_DEBUG=true

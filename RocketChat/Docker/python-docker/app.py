@@ -59,14 +59,13 @@ def get_messages():
     else:
         print("Failed to fetch messages:", response.text)
 # Define token, org, url and bucket for influxDB after creating a user on influxDB server
-token = "E3pfPaw3V460ihs8GBHhafFNmD2sbM4fGiGMGTrlwlyxH08yl53-gQldAQJtg5nH3PfpK1eMX42LXlyajhABXg=="
+token = "deGkuJVrTjkpFVzq052-udq2HKzlAvJGtL0JpxuNChE5uO8WtzOi-I6pqf2--s9E3eqdDG-Ao4ikLEoeg4NOyw=="
 org = "IUT_Brest"
 url = "http://influxdb_docker:8086"
 bucket="lemarconnect"
 write_client = influxdb_client.InfluxDBClient(url=url, token=token, org=org) # define write_client for influxDB
 
 write_api =  write_client.write_api(write_options=SYNCHRONOUS) # initialize write api for influxDB 
-    
 
 # Define the MQTT broker and port
 broker = "eu1.cloud.thethings.network"

@@ -12,7 +12,7 @@ LoRaModem modem;
 String appEui = SECRET_APP_EUI;
 String appKey = SECRET_APP_KEY;
 int waitToSendMessage = 0;
-int enableDebug = 0;
+int enableDebug = 1;
 
 void setup()
 {
